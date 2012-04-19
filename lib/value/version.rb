@@ -1,5 +1,14 @@
 # -*- coding: utf-8 -*-
 
+require 'inventory'
+
 class Value
-  Version = '0.1.0'
+  Version = Inventory.new(0, 2, 0){
+    def additional_libs
+      super +
+        %w'
+          value/yard.rb
+        '
+    end
+  }
 end

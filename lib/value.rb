@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 
 class Value
-  autoload :Version, 'value/version'
-
   class << self
     def values(*values)
       if values.empty?
@@ -27,7 +25,6 @@ class Value
     self.class.values.each_with_index do |value, index|
       instance_variable_set :"@#{value}", arguments[index]
     end
-    freeze
   end
 
   def ==(other)
