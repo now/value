@@ -3,24 +3,88 @@
 require 'value/yard'
 
 Expectations do
-  expect 'Represents As.' do
+  expect [YARD::CodeObjects::Proxy.new(:root, 'Value')] do
+    YARD::Registry.clear
     YARD::Parser::SourceParser.parse_string(<<EOS)
-class A < Value
+class A
   # Represents As.
-  values :a, :b
+  # @param [String] a
+  # @param [Integer] b The b
+  Value(:a, :b)
+end
+EOS
+    YARD::Registry.at('A').mixins(:instance)
+  end
+
+  expect 'Represents As.' do
+    YARD::Registry.clear
+    YARD::Parser::SourceParser.parse_string(<<EOS)
+class A
+  # Represents As.
+  Value(:a, :b)
 end
 EOS
     YARD::Registry.at('A#initialize').docstring
   end
 
-  expect nil do
+  expect [['a', nil], ['b', '3']] do
     YARD::Registry.clear
     YARD::Parser::SourceParser.parse_string(<<EOS)
-class A < Value
+class A
+  # Represents As.
+  Value(:a, [:b, 3])
+end
+EOS
+    YARD::Registry.at('A#initialize').parameters
+  end
+
+  expect [:==, :b, :initialize] do
+    YARD::Registry.clear
+    YARD::Parser::SourceParser.parse_string(<<EOS)
+class A
   # Represents As.
   # @param [String] a
   # @param [Integer] b The b
-  values :a, :b
+  Value(:a, :b)
+end
+EOS
+    YARD::Registry.all(:method).map(&:name).sort
+  end
+
+  expect [:==, :b, :initialize] do
+    YARD::Registry.clear
+    YARD::Parser::SourceParser.parse_string(<<EOS)
+class A
+  # Represents As.
+  # @param [String] a
+  # @param [Integer] *b The b
+  Value(:a, :'*b')
+end
+EOS
+    YARD::Registry.all(:method).map(&:name).sort
+  end
+
+  expect [:==, :b, :initialize] do
+    YARD::Registry.clear
+    YARD::Parser::SourceParser.parse_string(<<EOS)
+class A
+  # Represents As.
+  # @param [String] a
+  # @param [Integer] &b The b
+  Value(:a, :'&b')
+end
+EOS
+    YARD::Registry.all(:method).map(&:name).sort
+  end
+
+  expect nil do
+    YARD::Registry.clear
+    YARD::Parser::SourceParser.parse_string(<<EOS)
+class A
+  # Represents As.
+  # @param [String] a
+  # @param [Integer] b The b
+  Value(:a, :b)
 end
 EOS
     YARD::Registry.at('A#a')
@@ -29,24 +93,25 @@ EOS
   expect '@return [Integer] The b' do
     YARD::Registry.clear
     YARD::Parser::SourceParser.parse_string(<<EOS)
-class A < Value
+class A
   # Represents As.
   # @param [String] a
   # @param [Integer] b The b
-  values :a, :b
+  Value(:a, :b)
 end
 EOS
     YARD::Registry.at('A#b').docstring.to_raw
   end
 
-  expect "@param [A] other\n@return [Boolean] True if the receiver’s class, a, and b `#==` those of _other_" do
+  expect "@param [A] other\n@return [Boolean] True if the receiver’s class, a, {#b}, and c block `#==` those of _other_" do
     YARD::Registry.clear
     YARD::Parser::SourceParser.parse_string(<<EOS)
-class A < Value
+class A
   # Represents As.
   # @param [String] a
-  # @param [Integer] b The b
-  values :a, :b
+  # @param [Integer] *b The b
+  # @param [Integer] &c
+  Value(:a, :'*b', :'&c')
 end
 EOS
     YARD::Registry.at('A#==').docstring.to_raw

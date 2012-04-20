@@ -2,7 +2,7 @@
 
 require 'inventory'
 
-class Value
+module Value
   Version = Inventory.new(0, 2, 0){
     def additional_libs
       super +
