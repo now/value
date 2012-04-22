@@ -6,7 +6,7 @@ class YARD::Handlers::Ruby::ValuesHandler < YARD::Handlers::Ruby::Base
   handles method_call('Value')
   namespace_only
 
-  def process
+  process do
     modul = Proxy.new(:root, 'Value')
     modul.type = :module
     namespace.mixins(scope).unshift(modul) unless namespace.mixins(scope).include? modul
@@ -16,15 +16,15 @@ class YARD::Handlers::Ruby::ValuesHandler < YARD::Handlers::Ruby::Base
       e.text = ''
     end
     define '==', %w'other',
-    ("@param [%s] other\n" +
-     "@return [Boolean] True if the receiver’s class%s%s%s and %s `#==` those of _other_") %
-      [namespace.name,
-       parameters.size > 1 ? ', ' : '',
-       parameters[0..-2].map{ |name, _| (accessors.any?{ |e| e.name == name } ? '{#%s}' : '%s') % basename(name) }.join(', '),
-       parameters.size > 1 ? ',' : '',
-       parameters.last.first.start_with?('&') ?
-         '%s block' % parameters.last.first[1..-1] :
-         basename(parameters.last.first)]
+      ("@param [%s] other\n" +
+       "@return [Boolean] True if the receiver’s class%s%s%s and %s `#==` those of _other_") %
+        [namespace.name,
+         parameters.size > 1 ? ', ' : '',
+         parameters[0..-2].map{ |name, _| (accessors.any?{ |e| e.name == name } ? '{#%s}' : '%s') % basename(name) }.join(', '),
+         parameters.size > 1 ? ',' : '',
+         parameters.last.first.start_with?('&') ?
+           '%s block' % parameters.last.first[1..-1] :
+           basename(parameters.last.first)]
   end
 
   def define(name, parameters, docstring = nil, visibility = :public)

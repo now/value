@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 
 Expectations do
+  expect Value::Values.new(:a) do
+    Class.new(Class.new{ Value(:a) }).values
+  end
+
   expect ArgumentError.new('wrong number of arguments (0 for 1)') do
     Class.new{ Value(:a) }.new
   end

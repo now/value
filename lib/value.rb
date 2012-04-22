@@ -69,18 +69,27 @@ module Value
       self
     end
 
+    def ==(other)
+      self.class == other.class and
+        required == other.required and
+        optional == other.optional and
+        splat == other.splat and
+        block == other.block
+    end
+
     attr_reader :required, :optional, :splat, :block
   end
 end
 
 class Module
   def Value(first, *rest)
-    instance_variable_set :@values, Value::Values.new(first, *rest).tap{ |values|
-      attr_reader(*values)
-      protected(*values)
-    }
+    values = Value::Values.new(first, *rest)
+    attr_reader(*values)
+    protected(*values)
     (class << self; self; end).instance_eval do
-      attr_reader :values
+      define_method :values do
+        values
+      end
     end
     include Value
   end
