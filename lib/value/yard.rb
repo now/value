@@ -23,7 +23,7 @@ class YARD::Handlers::Ruby::ValuesHandler < YARD::Handlers::Ruby::Base
          parameters[0..-2].map{ |name, _| (accessors.any?{ |e| e.name == name } ? '{#%s}' : '%s') % basename(name) }.join(', '),
          parameters.size > 1 ? ',' : '',
          parameters.last.first.start_with?('&') ?
-           '%s block' % parameters.last.first[1..-1] :
+           (parameters.last.first == '&block' ? 'block' : '%s block' % parameters.last.first[1..-1]) :
            basename(parameters.last.first)]
   end
 
