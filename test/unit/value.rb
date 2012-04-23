@@ -1,10 +1,6 @@
 # -*- coding: utf-8 -*-
 
 Expectations do
-  expect Value::Values.new(:a) do
-    Class.new(Class.new{ Value(:a) }).values
-  end
-
   expect ArgumentError.new('wrong number of arguments (0 for 1)') do
     Class.new{ Value(:a) }.new
   end
@@ -170,5 +166,9 @@ Expectations do
 
   expect(/\A#<Class:0x[[:xdigit:]]+>\.new\(1, 2, 3\)\z/) do
     Class.new{ Value(:a, :b, :c) }.new(1, 2, 3).inspect
+  end
+
+  expect 1 do
+    Class.new{ include Module.new{ Value(:a) } }.new(1).instance_eval{ a }
   end
 end

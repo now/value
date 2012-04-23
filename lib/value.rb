@@ -4,24 +4,24 @@ module Value
   def initialize(*arguments)
     raise ArgumentError,
       'wrong number of arguments (%d for %d)' %
-        [arguments.length, self.class.values.required.length] if
-          arguments.length < self.class.values.required.length
+        [arguments.length, values.required.length] if
+          arguments.length < values.required.length
     raise ArgumentError,
       'wrong number of arguments (%d for %d)' %
         [arguments.length,
-         self.class.values.required.length + self.class.values.optional.length] if
-          arguments.length > self.class.values.required.length +
-            self.class.values.optional.length and not self.class.values.splat
-    instance_variable_set :"@#{self.class.values.block}",
-      block_given? ? Proc.new : nil if self.class.values.block
-    instance_variable_set :"@#{self.class.values.splat}",
-      arguments[self.class.values.required.length +
-                self.class.values.optional.length..-1] if self.class.values.splat
-    self.class.values.required.each_with_index do |value, index|
+         values.required.length + values.optional.length] if
+          arguments.length > values.required.length +
+            values.optional.length and not values.splat
+    instance_variable_set :"@#{values.block}",
+      block_given? ? Proc.new : nil if values.block
+    instance_variable_set :"@#{values.splat}",
+      arguments[values.required.length +
+                values.optional.length..-1] if values.splat
+    values.required.each_with_index do |value, index|
       instance_variable_set :"@#{value}", arguments[index]
     end
-    self.class.values.optional.each_with_index do |(value, default), index|
-      offset = self.class.values.required.length + index
+    values.optional.each_with_index do |(value, default), index|
+      offset = values.required.length + index
       instance_variable_set :"@#{value}",
         offset >= arguments.length ? default : arguments[offset]
     end
@@ -29,19 +29,19 @@ module Value
 
   def ==(other)
     self.class == other.class and
-      self.class.values.all?{ |value| send(value) == other.send(value) }
+      values.all?{ |value| send(value) == other.send(value) }
   end
 
   alias eql? ==
 
   def hash
-    self.class.hash ^ self.class.values.map{ |value| send(value) }.hash
+    self.class.hash ^ values.map{ |value| send(value) }.hash
   end
 
   def inspect
     '%s.new(%s)' %
       [self.class,
-       self.class.values.map{ |value| send(value).inspect }.join(', ')]
+       values.map{ |value| send(value).inspect }.join(', ')]
   end
 
   class Values
@@ -86,11 +86,10 @@ class Module
     values = Value::Values.new(first, *rest)
     attr_reader(*values)
     protected(*values)
-    (class << self; self; end).instance_eval do
-      define_method :values do
-        values
-      end
+    define_method :values do
+      values
     end
+    private :values
     include Value
   end
 end
