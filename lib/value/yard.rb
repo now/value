@@ -20,7 +20,7 @@ class YARD::Handlers::Ruby::ValuesHandler < YARD::Handlers::Ruby::Base
     initialize = define('initialize', parameters.map{ |e| [e.jump(:ident).source, e.type == :array ? e[0][1].source : nil] })
     initialize.docstring.tags(:param).select{ |e| e.text and not e.text.empty? }.each do |e|
         define e.name.sub(/\A[&*]/, ''), [],
-               '@return [%s] %s' % [e.types.join(', '), e.text], :protected
+               '@return [%s] %s' % [e.types ? e.types.join(', '), e.text], :protected
         e.text = ''
       end
     initialize.docstring.add_tag(YARD::Tags::Tag.new(:note, 'Comparisons between instances are made between %s.' % join(comparables))) if comparables
