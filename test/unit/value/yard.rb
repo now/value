@@ -123,4 +123,44 @@ end
 EOS
   YARD::Registry.at('B').inheritance_tree(true)[1..3].map(&:path)
   end
+
+  expect 'Comparisons are only made between a.' do
+    YARD::Registry.clear
+    YARD::Parser::SourceParser.parse_string(<<EOS)
+class A
+  # This is A.
+  # @param [String] a
+  # @param [String] b
+  Value(:a, :b, :other => true, :comparable => [:a])
+end
+EOS
+  YARD::Registry.at('A#initialize').docstring.tag(:note).text
+  end
+
+  expect 'Comparisons are only made between a and b.' do
+    YARD::Registry.clear
+    YARD::Parser::SourceParser.parse_string(<<EOS)
+class A
+  # @param [String] a
+  # @param [String] b
+  # @param [String] c
+  Value(:a, :b, :c, :comparable => [:a, :b])
+end
+EOS
+  YARD::Registry.at('A#initialize').docstring.tag(:note).text
+  end
+
+  expect 'Comparisons are only made between a, b, and c.' do
+    YARD::Registry.clear
+    YARD::Parser::SourceParser.parse_string(<<EOS)
+class A
+  # @param [String] a
+  # @param [String] b
+  # @param [String] c
+  # @param [String] d
+  Value(:a, :b, :c, :d, :comparable => [:a, :b, :c])
+end
+EOS
+  YARD::Registry.at('A#initialize').docstring.tag(:note).text
+  end
 end
