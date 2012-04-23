@@ -36,7 +36,7 @@ EOS
     YARD::Registry.at('A#initialize').parameters
   end
 
-  expect [:==, :b, :initialize] do
+  expect [:b, :initialize] do
     YARD::Registry.clear
     YARD::Parser::SourceParser.parse_string(<<EOS)
 class A
@@ -48,7 +48,7 @@ EOS
     YARD::Registry.all(:method).map(&:name).sort
   end
 
-  expect [:==, :b, :initialize] do
+  expect [:b, :initialize] do
     YARD::Registry.clear
     YARD::Parser::SourceParser.parse_string(<<EOS)
 class A
@@ -60,7 +60,7 @@ EOS
     YARD::Registry.all(:method).map(&:name).sort
   end
 
-  expect [:==, :b, :initialize] do
+  expect [:b, :initialize] do
     YARD::Registry.clear
     YARD::Parser::SourceParser.parse_string(<<EOS)
 class A
@@ -94,29 +94,5 @@ class A
 end
 EOS
     YARD::Registry.at('A#b').docstring.to_raw
-  end
-
-  expect "@param [A] other\n@return [Boolean] True if the receiver’s class, a, {#b}, and c block `#==` those of _other_" do
-    YARD::Registry.clear
-    YARD::Parser::SourceParser.parse_string(<<EOS)
-class A
-  # @param [String] a
-  # @param [Integer] *b The b
-  # @param [Proc] &c
-  Value(:a, :'*b', :'&c')
-end
-EOS
-    YARD::Registry.at('A#==').docstring.to_raw
-  end
-
-  expect "@param [A] other\n@return [Boolean] True if the receiver’s class and block `#==` those of _other_" do
-    YARD::Registry.clear
-    YARD::Parser::SourceParser.parse_string(<<EOS)
-class A
-  # @param [Proc] &block
-  Value(:'&block')
-end
-EOS
-    YARD::Registry.at('A#==').docstring.to_raw
   end
 end
