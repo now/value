@@ -58,7 +58,7 @@ class Module
       values
     end
     private :values
-    include Value
     include Value::Comparable if options[:comparable]
+    include Value
   end
 end

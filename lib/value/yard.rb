@@ -7,16 +7,26 @@ class YARD::Handlers::Ruby::ValuesHandler < YARD::Handlers::Ruby::Base
   namespace_only
 
   process do
-    modul = Proxy.new(:root, 'Value').tap{ |m| m.type = :module }
-    namespace.mixins(scope).unshift(modul) unless namespace.mixins(scope).include? modul
-    define('initialize',
-           statement.parameters(false).
-             map{ |e| [e.jump(:ident).source, e.type == :array ? e[0][1].source : nil] }).
+    parameters = statement.parameters(false)
+    if YARD::Parser::Ruby::AstNode === parameters[-1][0] and
+        parameters[-1][0].type == :assoc and
+        parameters[-1].jump(:ident).source == 'comparable'
+      parameters.pop
+      ancestor 'Comparable'
+      ancestor 'Value::Comparable'
+    end
+    ancestor 'Value'
+    define('initialize', parameters.map{ |e| [e.jump(:ident).source, e.type == :array ? e[0][1].source : nil] }).
       docstring.tags(:param).select{ |e| e.text and not e.text.empty? }.each do |e|
         define e.name.sub(/\A[&*]/, ''), [],
                '@return [%s] %s' % [e.types.join(', '), e.text], :protected
         e.text = ''
       end
+  end
+
+  def ancestor(name)
+    modul = Proxy.new(:root, name).tap{ |m| m.type = :module }
+    namespace.mixins(scope).unshift(modul) unless namespace.mixins(scope).include? modul
   end
 
   def define(name, parameters, docstring = nil, visibility = :public)

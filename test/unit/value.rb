@@ -171,4 +171,8 @@ Expectations do
   expect 1 do
     Class.new{ include Module.new{ Value(:a) } }.new(1).instance_eval{ a }
   end
+
+  expect [Value, Value::Comparable, Comparable] do
+    Class.new{ Value(:a, :comparable => true) }.ancestors[1..3]
+  end
 end
