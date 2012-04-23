@@ -44,46 +44,14 @@ module Value
        values.map{ |value| send(value).inspect }.join(', ')]
   end
 
-  class Values
-    include Enumerable
-
-    def initialize(*values)
-      values.pop if @block = values.last.to_s.start_with?('&') ? values.last.to_s[1..-1].to_sym : nil
-      values.pop if @splat = (values.last and values.last.to_s.start_with?('*')) ?
-        values.last.to_s[1..-1].to_sym : nil
-      required, optional = values.partition{ |e| not(Array === e) }
-      @required = required.map(&:to_sym)
-      @optional = optional.map{ |e| [e.first.to_sym, e.last] }
-    end
-
-    def each
-      return enum_for(__method__) unless block_given?
-      required.each do |value|
-        yield value
-      end
-      optional.each do |value, _|
-        yield value
-      end
-      yield splat if splat
-      yield block if block
-      self
-    end
-
-    def ==(other)
-      self.class == other.class and
-        required == other.required and
-        optional == other.optional and
-        splat == other.splat and
-        block == other.block
-    end
-
-    attr_reader :required, :optional, :splat, :block
-  end
+  load File.expand_path('../value/version.rb', __FILE__)
+  Version.load
 end
 
 class Module
   def Value(first, *rest)
-    values = Value::Values.new(first, *rest)
+    options = Hash === rest.last ? rest.pop : {}
+    values = Value::Values.new(*([first] + rest).push({:comparable => options[:comparable]}))
     attr_reader(*values)
     protected(*values)
     define_method :values do
@@ -91,5 +59,6 @@ class Module
     end
     private :values
     include Value
+    include Value::Comparable if options[:comparable]
   end
 end
