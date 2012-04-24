@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-require 'value/yard'
+require 'value/yard-1.0'
 
 Expectations do
   expect [YARD::CodeObjects::Proxy.new(:root, 'Value')] do
@@ -104,7 +104,7 @@ class A
   Value(:a, :comparable => true)
 end
 EOS
-  YARD::Registry.at('A').inheritance_tree(true)[1..3].map(&:path)
+    YARD::Registry.at('A').inheritance_tree(true)[1..3].map(&:path)
   end
 
   expect %w'Value Value::Comparable Comparable' do
@@ -121,10 +121,10 @@ class B
   Value(:a, :b, :comparable => true)
 end
 EOS
-  YARD::Registry.at('B').inheritance_tree(true)[1..3].map(&:path)
+    YARD::Registry.at('B').inheritance_tree(true)[1..3].map(&:path)
   end
 
-  expect 'Comparisons are only made between a.' do
+  expect 'Comparisons between instances are made between a.' do
     YARD::Registry.clear
     YARD::Parser::SourceParser.parse_string(<<EOS)
 class A
@@ -134,10 +134,10 @@ class A
   Value(:a, :b, :other => true, :comparable => [:a])
 end
 EOS
-  YARD::Registry.at('A#initialize').docstring.tag(:note).text
+    YARD::Registry.at('A#initialize').docstring.tag(:note).text
   end
 
-  expect 'Comparisons are only made between a and b.' do
+  expect 'Comparisons between instances are made between a and b.' do
     YARD::Registry.clear
     YARD::Parser::SourceParser.parse_string(<<EOS)
 class A
@@ -147,10 +147,10 @@ class A
   Value(:a, :b, :c, :comparable => [:a, :b])
 end
 EOS
-  YARD::Registry.at('A#initialize').docstring.tag(:note).text
+    YARD::Registry.at('A#initialize').docstring.tag(:note).text
   end
 
-  expect 'Comparisons are only made between a, b, and c.' do
+  expect 'Comparisons between instances are made between a, b, and c.' do
     YARD::Registry.clear
     YARD::Parser::SourceParser.parse_string(<<EOS)
 class A
@@ -161,6 +161,6 @@ class A
   Value(:a, :b, :c, :d, :comparable => [:a, :b, :c])
 end
 EOS
-  YARD::Registry.at('A#initialize').docstring.tag(:note).text
+    YARD::Registry.at('A#initialize').docstring.tag(:note).text
   end
 end
