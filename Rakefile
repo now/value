@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 require 'inventory/rake/tasks-1.0'
-require 'lookout/rake/tasks-1.0'
+require 'lookout/rake/tasks-3.0'
 
 $:.unshift File.expand_path('../lib', __FILE__)
 require 'value/version'
@@ -11,6 +11,7 @@ Inventory::Rake::Tasks.define Value::Version, :gem => proc{ |_, s|
   s.email = 'now@bitwi.se'
   s.homepage = 'https://github.com/now/value'
 
+  s.add_development_dependency 'lookout', '~> 3.0'
   s.add_development_dependency 'yard', '~> 0.7.0'
 
   s.add_runtime_dependency 'inventory', '~> 1.0'
