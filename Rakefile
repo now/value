@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 
-require 'inventory/rake/tasks-1.0'
-require 'lookout/rake/tasks-3.0'
+require 'inventory/rake-1.0'
+require 'lookout/rake-3.0'
 
-$:.unshift File.expand_path('../lib', __FILE__)
-require 'value/version'
+load File.expand_path('../lib/value/version.rb', __FILE__)
 
 Inventory::Rake::Tasks.define Value::Version, :gem => proc{ |_, s|
   s.author = 'Nikolai Weibull'
