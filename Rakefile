@@ -10,6 +10,4 @@ Inventory::Rake::Tasks.define Value::Version, :gem => proc{ |_, s|
   s.email = 'now@bitwi.se'
   s.homepage = 'https://github.com/now/value'
 }
-
-# TODO: Silence warnings generated from YARD (remove this once we plug them)
-Lookout::Rake::Tasks::Test.new :options => []
+Lookout::Rake::Tasks::Test.new
