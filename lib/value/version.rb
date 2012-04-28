@@ -6,7 +6,7 @@ module Value
   Version = Inventory.new(1, 1, 1){
     def dependencies
       super + Inventory::Dependencies.new{
-        development 'inventory-rake', 1, 2, 0
+        development 'inventory-rake', 1, 3, 0
         development 'lookout', 3, 0, 0
         development 'lookout-rake', 3, 0, 0
         development 'yard', 0, 7, 0
