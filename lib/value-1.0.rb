@@ -41,7 +41,14 @@ module Value
   def inspect
     '%s.new(%s)' %
       [self.class,
-       values.map{ |value| send(value).inspect }.join(', ')]
+       [values.required.map{ |name| send(name).inspect },
+        values.optional.
+          map{ |name, default| [send(name), default] }.
+          select{ |value, default| value != default or values.splat }.
+          map{ |value, _| value },
+        values.splat ? send(values.splat).map{ |value| value.inspect } : [],
+        values.block ? ['&%s' % [send(values.block).inspect]] : []].
+          flatten.join(', ')]
   end
 
   load File.expand_path('../value/version.rb', __FILE__)

@@ -3,7 +3,7 @@
 require 'inventory-1.0'
 
 module Value
-  Version = Inventory.new(1, 1, 0){
+  Version = Inventory.new(1, 1, 1){
     def dependencies
       super + Inventory::Dependencies.new{
         development 'inventory-rake', 1, 2, 0

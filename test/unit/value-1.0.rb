@@ -168,6 +168,26 @@ Expectations do
     Class.new{ Value(:a, :b, :c) }.new(1, 2, 3).inspect
   end
 
+  expect(/\A#<Class:0x[[:xdigit:]]+>\.new\(1, 2\)\z/) do
+    Class.new{ Value(:a, :b, [:c, 1]) }.new(1, 2, 1).inspect
+  end
+
+  expect(/\A#<Class:0x[[:xdigit:]]+>\.new\(1, 2, 3, 4, 5\)\z/) do
+    Class.new{ Value(:a, :b, :'*c') }.new(1, 2, 3, 4, 5).inspect
+  end
+
+  expect(/\A#<Class:0x[[:xdigit:]]+>\.new\(1, 2, 3, 4, 5\)\z/) do
+    Class.new{ Value(:a, :b, [:c, 1], :'*d') }.new(1, 2, 3, 4, 5).inspect
+  end
+
+  expect(/\A#<Class:0x[[:xdigit:]]+>\.new\(1, 2, 1, 4, 5\)\z/) do
+    Class.new{ Value(:a, :b, [:c, 1], :'*d') }.new(1, 2, 1, 4, 5).inspect
+  end
+
+  expect(/\A#<Class:0x[[:xdigit:]]+>\.new\(1, 2, 1, 4, 5, &#<Proc.*>\)\z/) do
+    Class.new{ Value(:a, :b, [:c, 1], :'*d', :'&e') }.new(1, 2, 1, 4, 5){ }.inspect
+  end
+
   expect 1 do
     Class.new{ include Module.new{ Value(:a) } }.new(1).instance_eval{ a }
   end
