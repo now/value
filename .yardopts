@@ -1,0 +1,1 @@
+--no-private --protected --private --query '(!object.docstring.blank?&&object.docstring.line)||object.root?' --markup markdown --no-stats --plugin yard-heuristics-1.0

@@ -1,3 +1,165 @@
                                      Value
 
-  Value is a library for defining value objects in Ruby.
+  Value is a library for defining immutable value objects in Ruby.  A value
+  object is an object whose equality to other objects is determined by its
+  value, not its identity, think dates and amounts of money.  A value object
+  should also be immutable, as you don’t want the date “2013-04-22” itself to
+  change but the current date to change from “2013-04-22” to “2013-04-23”.
+  That is, you don’t want entries in a calendar for 2013-04-22 to move to
+  2013-04-23 simply because the current date changes from 2013-04-22 to
+  2013-04-23.
+
+  A value object consists of one or more attributes stored in instance
+  variables.  Value sets up an #initialize method for you that let’s you set
+  these attributes, as, value objects being immutable, this’ll be your only
+  chance to do so.  Value also adds equality checks ‹#==› and ‹#eql?› (which
+  are themselves equivalent), a ‹#hash› method, a nice ‹#inspect› method, and a
+  protected attribute reader for each attribute.  You may of course add any
+  additional methods that your value object will benefit from.
+
+  That’s basically all there’s too it.  Let’s now look at using the Value
+  library.
+
+§ Usage
+
+    You create value object class by invoking ‹#Value› inside the class
+    (module) you wish to make into a value object class.  Let’s create a class
+    that represent points on a plane:
+
+      class Point
+        Value :x, :y
+      end
+
+    A ‹Point› is thus a value object consisting of two sub-values ‹x› and ‹y›
+    (the coordinates).  Just from invoking ‹#Value›, a ‹Point› object will have
+    a constructor that takes two arguments to set instance variables ‹@x› and
+    ‹@y›, equality checks ‹#==› and ‹#eql?› (which are the same), a ‹#hash›
+    method, a nice ‹#inspect› method, and two protected attribute readers ‹#x›
+    and ‹#y›.  We can thus already creat ‹Point›s:
+
+      origo = Point.new(0, 0)
+
+    The default of making the attribute readers protected is often good
+    practice, but for a ‹Point› it probably makes sense to be able to access
+    its coordinates:
+
+      class Point
+        public(*attributes)
+      end
+
+    This’ll make all attributes of ‹Point› public.  You can of course choose to
+    only make certain attributes public:
+
+      class Point
+        public :x
+      end
+
+    Note that this public is standard Ruby functionality.  Adding a method to
+    ‹Point› is of course also possible and very much Rubyish:
+
+      class Point
+        def distance(other)
+          Math.sqrt((other.x - x)**2 + (other.y - y)**2)
+        end
+      end
+
+    For some value object classes you might want to support optional
+    attributes.  This is done by providing a default value for the attribute,
+    like so:
+
+      class Money
+        Value :amount, [:currency, :USD]
+      end
+
+    Here, the ‹currency› attribute will default to ‹:USD›.  You can create
+    ‹Money› via
+
+      dollars = Money.new(2)
+
+    but also
+
+      kronor = Money.new(2, :SEK)
+
+    All required attributes must come before any optional attributes.
+
+    Splat attributes are also supported:
+
+      class List
+        Value :'*elements'
+      end
+
+      empty = List.new
+      suits = List.new(:spades, :hearts, :diamonds, :clubs)
+
+    Splat attributes are optional.
+
+    Finally, block attributes are also available:
+
+      class Block
+        Value :'&block'
+      end
+
+      block = Block.new{ |e| e * 2 }
+
+    Block attributes are optional.
+
+    Comparison beyond ‹#==› is possible by specifingy the ‹:comparable› option
+    to ‹#Value›, listing one or more attributes that should be included in the
+    comparison:
+
+      class Vector
+        Value :a, :b, :comparable => :a
+      end
+
+    Note that equality (‹#==› and ‹#eql?›) is always defined based on all
+    attributes, regardless of arguments to ‹:comparable›.
+
+    Here we say that comparisons between ‹Vector›s should be made between the
+    values of the ‹a› attribute only.  We can also make comparisons between all
+    attributes of a value object:
+
+      class Vector
+        Value :a, :b, :comparable => true
+      end
+
+    To sum things up, let’s use all possible arguments to ‹#Value› at once:
+
+      class Method
+        Value :file, :line, [:name, 'unnamed'], :'*args', :'&block',
+              :comparable => [:file, :line]
+      end
+
+    A ‹Method› consists of file and line information, a possible name, some
+    arguments, possibly a block, and is comparable on the file and line on
+    which they appear.
+
+    Check out the {full API documentation}¹ for a more explicit description,
+    should you need it or should you want to extend it.
+
+¹ http://disu.se/software/value/api/
+
+§ Financing
+
+    Currently, most of my time is spent at my day job and in my rather busy
+    private life.  Please motivate me to spend time on this piece of software
+    by donating some of your money to this project.  Yeah, I realize that
+    requesting money to develop software is a bit, well, capitalistic of me.
+    But please realize that I live in a capitalistic society and I need money
+    to have other people give me the things that I need to continue living
+    under the rules of said society.  So, if you feel that this piece of
+    software has helped you out enough to warrant a reward, please PayPal a
+    donation to now@disu.se¹.  Thanks!  Your support won’t go unnoticed!
+
+¹ Send a donation:
+  https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=now%40disu%2ese&item_name=Nikolai%20Weibull%20Software%20Services
+
+§ Reporting Bugs
+
+    Please report any bugs that you encounter to the {issue tracker}¹.
+
+  ¹ See https://github.com/now/value/issues
+
+§ Authors
+
+    Nikolai Weibull wrote the code, the tests, the manual pages, and this
+    README.
