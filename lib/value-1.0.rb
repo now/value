@@ -100,7 +100,7 @@ module Value
     attributes
   end
 
-  load File.expand_path('../value/version.rb', __FILE__)
+  load File.expand_path('../value-1.0/version.rb', __FILE__)
   Version.load
 end
 
