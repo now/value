@@ -151,7 +151,7 @@
     donation to now@disu.se¹.  Thanks!  Your support won’t go unnoticed!
 
 ¹ Send a donation:
-  https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=now%40disu%2ese&item_name=Nikolai%20Weibull%20Software%20Services
+  https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=now%40disu%2ese&item_name=Value
 
 § Reporting Bugs
 
@@ -163,3 +163,13 @@
 
     Nikolai Weibull wrote the code, the tests, the manual pages, and this
     README.
+
+§ Licensing
+
+    Value is free software: you may redistribute it and/or modify it under the
+    terms of the {GNU Lesser General Public License, version 3}¹ or later², as
+    published by the {Free Software Foundation}³.
+
+¹ See http://disu.se/licenses/lgpl-3.0/
+² See http://gnu.org/licenses/
+³ See http://fsf.org/
