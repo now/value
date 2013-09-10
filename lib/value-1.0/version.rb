@@ -8,7 +8,7 @@ module Value
       author 'Nikolai Weibull', 'now@disu.se'
     }
 
-    homepage 'http://disu.se/software/value'
+    homepage 'http://disu.se/software/value-1.0/'
 
     licenses{
       license 'LGPLv3+',
